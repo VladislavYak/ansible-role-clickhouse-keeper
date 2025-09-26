@@ -1,0 +1,18 @@
+---
+# handlers file for clickhouse-keeper
+
+- name: Enable Keeper
+  systemd:
+    name: clickhouse-keeper
+    enabled: yes
+    state: started
+    daemon_reload: yes
+  listen: Update ClickHouse
+
+- name: Restart Keeper
+  systemd:
+    name: clickhouse-keeper
+    state: restarted
+  listen: Update ClickHouse
+
+

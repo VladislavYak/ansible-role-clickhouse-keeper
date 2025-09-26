@@ -1,0 +1,98 @@
+---
+# tasks file for clickhouse-keeper
+
+# ClickHouse Keeper installation and configuration tasks
+
+
+- name: Install multiple packages
+  apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - dirmngr
+    update_cache: yes
+  become: true
+
+- name: Download and store ClickHouse GPG key
+  ansible.builtin.get_url:
+    url: https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key
+    dest: /tmp/clickhouse-keyring.gpg
+    mode: '0644'
+  become: true
+
+- name: Dearmor and move ClickHouse GPG key to keyring
+  ansible.builtin.command:
+    cmd: gpg --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg /tmp/clickhouse-keyring.gpg
+    creates: /usr/share/keyrings/clickhouse-keyring.gpg
+  become: true
+
+- name: Add ClickHouse APT sources
+  apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg arch=amd64] https://packages.clickhouse.com/deb stable main
+    state: present
+
+
+- name: Install ClickHouse Keeper package
+  package:
+    name: clickhouse-keeper
+    state: present
+  notify: Enable Keeper
+
+- name: Create Keeper directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: "0755"
+  loop:
+    - "/var/lib/clickhouse-keeper"
+    - "/var/log/clickhouse-keeper"
+    - "/etc/clickhouse-keeper"
+    - "/etc/clickhouse-keeper/keeper_config.d"
+  notify: Restart Keeper
+
+- name: Configure ClickHouse Keeper
+  template:
+    src: keeper_config_new.xml.j2
+    dest: "/etc/clickhouse-keeper/keeper_config.xml"
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: "0644"
+  notify: Restart Keeper
+
+# - name: Configure ClickHouse Keeper
+#   template:
+#     src: coordination_settings.xml.j2
+#     dest: "/etc/clickhouse-keeper/keeper_config.d/coordination_settings.xml"
+#     owner: "{{ clickhouse_user }}"
+#     group: "{{ clickhouse_group }}"
+#     mode: "0644"
+#   notify: Restart Keeper
+
+# - name: Configure ClickHouse Keeper
+#   template:
+#     src: raft_configuration.xml.j2
+#     dest: "/etc/clickhouse-keeper/keeper_config.d/raft_configuration.xml"
+#     owner: "{{ clickhouse_user }}"
+#     group: "{{ clickhouse_group }}"
+#     mode: "0644"
+#   notify: Restart Keeper
+
+# - name: Configure ClickHouse Keeper
+#   template:
+#     src: openssl.xml.j2
+#     dest: "/etc/clickhouse-keeper/keeper_config.d/openssl.xml"
+#     owner: "{{ clickhouse_user }}"
+#     group: "{{ clickhouse_group }}"
+#     mode: "0644"
+#   notify: Restart Keeper
+
+# - name: Configure ClickHouse Keeper | listen_host
+#   template:
+#     src: clickhouse-keeper/listen_host.xml.j2
+#     dest: "/etc/clickhouse-keeper/keeper_config.d/listen_host.xml"
+#     owner: "{{ clickhouse_user }}"
+#     group: "{{ clickhouse_group }}"
+#     mode: "0644"
+#   notify: Restart Keeper

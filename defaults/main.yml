@@ -1,0 +1,8 @@
+---
+# defaults file for clickhouse-keeper
+
+keeper_port: 9181
+keeper_raft_port: 9234
+
+clickhouse_group: clickhouse
+clickhouse_user: clickhouse
