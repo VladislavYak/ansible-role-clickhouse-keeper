@@ -54,45 +54,45 @@
 
 - name: Configure ClickHouse Keeper
   template:
-    src: keeper_config_new.xml.j2
+    src: keeper_config.xml.j2
     dest: "/etc/clickhouse-keeper/keeper_config.xml"
     owner: "{{ clickhouse_user }}"
     group: "{{ clickhouse_group }}"
     mode: "0644"
   notify: Restart Keeper
 
-# - name: Configure ClickHouse Keeper
-#   template:
-#     src: coordination_settings.xml.j2
-#     dest: "/etc/clickhouse-keeper/keeper_config.d/coordination_settings.xml"
-#     owner: "{{ clickhouse_user }}"
-#     group: "{{ clickhouse_group }}"
-#     mode: "0644"
-#   notify: Restart Keeper
+- name: Configure ClickHouse Keeper
+  template:
+    src: coordination_settings.xml.j2
+    dest: "/etc/clickhouse-keeper/keeper_config.d/coordination_settings.xml"
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: "0644"
+  notify: Restart Keeper
 
-# - name: Configure ClickHouse Keeper
-#   template:
-#     src: raft_configuration.xml.j2
-#     dest: "/etc/clickhouse-keeper/keeper_config.d/raft_configuration.xml"
-#     owner: "{{ clickhouse_user }}"
-#     group: "{{ clickhouse_group }}"
-#     mode: "0644"
-#   notify: Restart Keeper
+- name: Configure ClickHouse Keeper
+  template:
+    src: raft_configuration.xml.j2
+    dest: "/etc/clickhouse-keeper/keeper_config.d/raft_configuration.xml"
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: "0644"
+  notify: Restart Keeper
 
-# - name: Configure ClickHouse Keeper
-#   template:
-#     src: openssl.xml.j2
-#     dest: "/etc/clickhouse-keeper/keeper_config.d/openssl.xml"
-#     owner: "{{ clickhouse_user }}"
-#     group: "{{ clickhouse_group }}"
-#     mode: "0644"
-#   notify: Restart Keeper
+- name: Configure ClickHouse Keeper
+  template:
+    src: openssl.xml.j2
+    dest: "/etc/clickhouse-keeper/keeper_config.d/openssl.xml"
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: "0644"
+  notify: Restart Keeper
 
-# - name: Configure ClickHouse Keeper | listen_host
-#   template:
-#     src: clickhouse-keeper/listen_host.xml.j2
-#     dest: "/etc/clickhouse-keeper/keeper_config.d/listen_host.xml"
-#     owner: "{{ clickhouse_user }}"
-#     group: "{{ clickhouse_group }}"
-#     mode: "0644"
-#   notify: Restart Keeper
+- name: Configure ClickHouse Keeper | listen_host
+  template:
+    src: listen_host.xml.j2
+    dest: "/etc/clickhouse-keeper/keeper_config.d/listen_host.xml"
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: "0644"
+  notify: Restart Keeper
